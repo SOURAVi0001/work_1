@@ -36,10 +36,10 @@ const VARIANT_STYLES: Record<WalletPillVariant, {
     },
     statusBar: {
         button: 'flex items-center gap-[5px] px-[5px] py-[2px] bg-transparent border border-[#1a1b23] rounded-xl text-[#6b6b7a] text-[10px] cursor-pointer',
-        walletIcon: 'w-[12px] h-[12px] min-w-[12px] min-h-[12px] text-[#6b6b7a] shrink-0',
+        walletIcon: 'w-[12px] h-[12px] min-w-[12px] min-h-[12px] text-[#d4d4d8] shrink-0',
         text: 'text-[#e2e8f0] font-semibold',
         solanaSize: { width: 12, height: 12 },
-        arrowIcon: 'w-[12px] h-[12px] min-w-[12px] min-h-[12px] text-[#fcfcfcfc] shrink-0',
+        arrowIcon: 'w-[12px] h-[12px] min-w-[12px] min-h-[12px] text-[#6b6b7a] shrink-0',
     },
 };
 
