@@ -9,6 +9,7 @@ interface TokenAvatarCardProps {
     imageUrl: string;
     creator: string;
     ringColor: string;
+    priority?: boolean;
 }
 
 export function TokenAvatarCard({
@@ -17,6 +18,7 @@ export function TokenAvatarCard({
     imageUrl,
     creator,
     ringColor,
+    priority = false,
 }: TokenAvatarCardProps) {
     const [imgError, setImgError] = useState(false);
     const [imgLoaded, setImgLoaded] = useState(false);
@@ -38,6 +40,7 @@ export function TokenAvatarCard({
                             onLoad={() => setImgLoaded(true)}
                             sizes="55px"
                             unoptimized={true}
+                            priority={priority}
                         />
                     ) : (
                         <span className="text-[14px] font-bold" style={{ color: ringColor }}>

@@ -230,6 +230,7 @@ export function TokenColumn({
                     flashDirection={priceFlash[token.id]}
                     showDecimals={showDecimals}
                     onQuickBuy={onQuickBuy}
+                    priority={virtualRow.index < 3}
                   />
                 </div>
               );

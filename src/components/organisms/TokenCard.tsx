@@ -16,14 +16,15 @@ interface TokenCardProps {
   flashDirection?: 'up' | 'down' | null;
   showDecimals?: boolean;
   onQuickBuy?: (token: Token) => void;
+  priority?: boolean;
 }
 
 function TokenCardComponent({
   token,
-
   flashDirection,
   showDecimals = true,
   onQuickBuy,
+  priority = false,
 }: TokenCardProps) {
   const [copied, setCopied] = useState(false);
   const [userIconColor] = useState(generateUserIconColor);
@@ -81,6 +82,7 @@ function TokenCardComponent({
         imageUrl={token.imageUrl}
         creator={tokenIdentity.creator}
         ringColor={ringColor}
+        priority={priority}
       />
 
       <div className="flex-1 min-w-0 flex flex-col gap-1 justify-center">

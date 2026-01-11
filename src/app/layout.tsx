@@ -50,12 +50,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://axiom.trade" />
         <link rel="dns-prefetch" href="https://axiom.trade" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased h-screen max-h-screen overflow-hidden flex flex-col bg-[#06070b]`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased h-screen max-h-screen overflow-hidden flex flex-col bg-[#06070b]`} suppressHydrationWarning>
         <Providers>
           <div className="shrink-0" style={{ zoom: 1.20 }}>
             <Suspense fallback={<HeaderSkeleton />}>
