@@ -57,12 +57,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased h-screen max-h-screen overflow-hidden flex flex-col bg-[#06070b]`} suppressHydrationWarning>
         <Providers>
-          <div className="shrink-0" style={{ zoom: 1.20 }}>
+          <div className="fixed top-0 left-0 right-0 z-[100] shrink-0">
             <Suspense fallback={<HeaderSkeleton />}>
               <Header />
             </Suspense>
           </div>
-          <main className="flex-1 flex flex-col overflow-hidden min-h-0" style={{ zoom: 1.33 }}>
+          <main className="flex-1 flex flex-col overflow-hidden min-h-0 pt-[53px] pb-[24px]" style={{ zoom: 1.33 }}>
             {children}
           </main>
         </Providers>
