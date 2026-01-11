@@ -16,6 +16,8 @@ export interface FilterConfig {
 interface FilterState {
   activeModalTab: string;
   filters: Record<string, FilterConfig>;
+  activePreset: 'P1' | 'P2' | 'P3';
+  activeQuickBuyAmount: number;
 }
 
 const initialFilterConfig: FilterConfig = {
@@ -38,6 +40,8 @@ const initialState: FilterState = {
     'Final Stretch': { ...initialFilterConfig },
     'Migrated': { ...initialFilterConfig },
   },
+  activePreset: 'P1',
+  activeQuickBuyAmount: 0,
 };
 
 const filterSlice = createSlice({
@@ -61,8 +65,14 @@ const filterSlice = createSlice({
     resetFilters: (state, action: PayloadAction<string>) => {
       state.filters[action.payload] = { ...initialFilterConfig };
     },
+    setActivePreset: (state, action: PayloadAction<'P1' | 'P2' | 'P3'>) => {
+      state.activePreset = action.payload;
+    },
+    setActiveQuickBuyAmount: (state, action: PayloadAction<number>) => {
+      state.activeQuickBuyAmount = action.payload;
+    },
   },
 });
 
-export const { setActiveModalTab, setFilterConfig, resetFilters } = filterSlice.actions;
+export const { setActiveModalTab, setFilterConfig, resetFilters, setActivePreset, setActiveQuickBuyAmount } = filterSlice.actions;
 export default filterSlice.reducer;

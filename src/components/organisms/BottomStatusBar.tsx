@@ -7,14 +7,13 @@ import {
   RiPulseLine,
   RiWindowLine,
   RiNotification3Line,
-  RiSettingsLine,
+  RiPaletteLine,
   RiGasStationLine,
   RiCapsuleLine,
   RiBarChartLine,
   RiTwitterXLine,
   RiListSettingsLine,
   RiBtcFill,
-  RiPaletteLine,
   RiDiscordFill,
   RiCoinLine,
   RiSettings3Line,
@@ -22,11 +21,12 @@ import {
   RiArrowRightSLine,
 } from '@remixicon/react';
 import { useRef, useState, useCallback, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { ChainLogo, Tooltip } from '@/components/atoms';
 import { NavButton, OptimizedImage } from '@/components/atoms';
-import { WalletSolPill, MultiChainBadge } from '@/components/molecules';
+import { WalletSolPill, MultiChainBadge, PresetPill } from '@/components/molecules';
+import { setActivePreset } from '@/store/filterSlice';
 import { cn } from '@/lib/utils';
 
 interface BottomStatusBarProps {
@@ -72,7 +72,10 @@ const SOCIAL_ICONS = [
 ];
 
 export function BottomStatusBar({ className, loading }: BottomStatusBarProps) {
+  const dispatch = useDispatch();
   const activeChain = useSelector((state: RootState) => state.ui.activeChain);
+  const activePreset = useSelector((state: RootState) => state.filter.activePreset);
+  const quickBuyAmount = useSelector((state: RootState) => state.filter.activeQuickBuyAmount);
   const chainName = activeChain === 'bnb' ? 'BNB' : 'SOL';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -144,7 +147,7 @@ export function BottomStatusBar({ className, loading }: BottomStatusBarProps) {
 
     return (
       <div className={`absolute ${position} top-0 bottom-0 w-[30px] flex items-center z-20 transition-opacity duration-200 ${canScroll ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className={`absolute inset-0 ${gradient} from-[#06070b] via-[#06070b] to-transparent pointer-events-none`} />
+        <div className={`absolute inset-0 ${gradient} from-black via-black/50 to-transparent pointer-events-none`} />
         <button
           onClick={() => scrollNav(direction)}
           className={`relative z-10 flex items-center justify-center cursor-pointer transition-opacity duration-200 ${padding} ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
@@ -157,7 +160,7 @@ export function BottomStatusBar({ className, loading }: BottomStatusBarProps) {
 
   return (
     <div
-      className={cn("relative flex items-center h-6 bg-[#06070b] border-t border-[#1a1b23] text-[10px] shrink-0 group", className)}
+      className={cn("fixed bottom-0 left-0 right-0 h-10 bg-zinc-950/90 border-t border-white/5 backdrop-blur-md z-[100] flex items-center text-[10px] shrink-0 group", className)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -224,6 +227,12 @@ export function BottomStatusBar({ className, loading }: BottomStatusBarProps) {
         </div>
 
         <div className="flex items-center gap-1.5 lg:gap-2 shrink-0">
+          <PresetPill
+            activePreset={activePreset}
+            quickBuyAmount={quickBuyAmount}
+            onPresetChange={(p) => dispatch(setActivePreset(p))}
+          />
+
           <div className="flex items-center gap-1">
             {FEE_DATA.map(renderFeeItem)}
           </div>
@@ -257,7 +266,6 @@ export function BottomStatusBar({ className, loading }: BottomStatusBarProps) {
               <RiWindowLine className="w-[10px] h-[10px] ml-1" />
               <span>Docs</span>
             </button>
-
           </div>
         </div>
       </div>
