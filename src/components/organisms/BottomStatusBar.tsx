@@ -19,13 +19,15 @@ import {
   RiSettings3Line,
   RiArrowLeftSLine,
   RiArrowRightSLine,
+  RiStarLine,
+  RiBookOpenLine,
 } from '@remixicon/react';
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
 import { ChainLogo, Tooltip } from '@/components/atoms';
 import { NavButton, OptimizedImage } from '@/components/atoms';
-import { WalletSolPill, MultiChainBadge, PresetPill } from '@/components/molecules';
+import { WalletSolPill, MultiChainBadge } from '@/components/molecules';
 import { setActivePreset } from '@/store/filterSlice';
 import { cn } from '@/lib/utils';
 
@@ -44,23 +46,25 @@ const HOVER_CLASSES = {
 };
 
 const PRICE_DATA = [
-  { icon: RiBtcFill, label: 'BTC', color: 'text-[#f7931a]', price: '69.67K', tooltip: 'Price of BTC in USD' },
-  { icon: null, label: 'ETH', color: 'text-[#497493]', price: '4167', tooltip: 'Price of ETH in USD', imageSrc: 'https://axiom.trade/images/eth-fill.svg' },
+  { icon: RiBtcFill, label: 'BTC', color: 'text-[#f7931a]', price: '$90.6K', tooltip: 'Price of BTC in USD' },
+  { icon: null, label: 'ETH', color: 'text-[#497493]', price: '$3094', tooltip: 'Price of ETH in USD', imageSrc: 'https://axiom.trade/images/eth-fill.svg' },
 ];
 
 const FEE_DATA = [
-  { icon: RiCapsuleLine, label: 'Migration', price: '$50.2K', tooltip: 'Estimated Migration Price' },
-  { icon: RiGasStationLine, label: 'Gas', price: '0.062₂1', tooltip: 'Recommended priority fee' },
-  { icon: RiCoinLine, label: 'Bribe', price: '0.00₂38', tooltip: 'Recommend bribe fee' },
+  { icon: RiCapsuleLine, label: 'Migration', price: '$55.9K', tooltip: 'Estimated Migration Price' },
+  { icon: RiGasStationLine, label: 'Gas', price: '0.0₂23', tooltip: 'Recommended priority fee' },
+  { icon: RiCoinLine, label: 'Bribe', price: '0.003', tooltip: 'Recommend bribe fee' },
 ];
 
-const NAV_SETTINGS = [
-  { icon: RiWalletLine, label: 'Wallet', tooltip: 'Wallet Settings', withDot: true },
-  { icon: RiTwitterXLine, label: 'Twitter', tooltip: 'Twitter Settings', withDot: true },
-  { icon: RiCompass3Line, label: 'Discover', tooltip: 'Discover Settings', withDot: true },
+const NAV_LINKS = [
+  { icon: RiWalletLine, label: 'Wallet', tooltip: 'Wallet Settings' },
+  { icon: RiTwitterXLine, label: 'Twitter', tooltip: 'Twitter Settings' },
+  { icon: RiCompass3Line, label: 'Discover', tooltip: 'Discover Settings' },
+  { icon: RiPulseLine, label: 'Pulse', tooltip: 'Pulse Settings' },
+  { icon: RiBarChartLine, label: 'PnL', tooltip: 'PnL Settings' },
 ];
 
-const END_ICONS = [
+const UTILITY_ICONS = [
   { icon: RiWindowLine, tooltip: 'Hide Watchlist Ticker' },
   { icon: RiNotification3Line, tooltip: 'Notification Settings' },
   { icon: RiPaletteLine, tooltip: 'Customize Theme' },
@@ -75,7 +79,6 @@ export function BottomStatusBar({ className, loading }: BottomStatusBarProps) {
   const dispatch = useDispatch();
   const activeChain = useSelector((state: RootState) => state.ui.activeChain);
   const activePreset = useSelector((state: RootState) => state.filter.activePreset);
-  const quickBuyAmount = useSelector((state: RootState) => state.filter.activeQuickBuyAmount);
   const chainName = activeChain === 'bnb' ? 'BNB' : 'SOL';
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -107,38 +110,6 @@ export function BottomStatusBar({ className, loading }: BottomStatusBarProps) {
     }
   }, [updateScrollState]);
 
-  const settingsHoverClasses = cn(HOVER_CLASSES.common, HOVER_CLASSES.settings, "text-[8px]");
-
-  const renderPriceItem = (item: typeof PRICE_DATA[0]) => (
-    <Tooltip content={item.tooltip} key={item.label}>
-      <div className={cn("flex items-center gap-[3px] -mr-2 whitespace-nowrap", HOVER_CLASSES.common)}>
-        {item.icon ? (
-          <item.icon className={`w-[11px] h-[11px] ${item.color}`} />
-        ) : item.imageSrc ? (
-          <OptimizedImage src={item.imageSrc} alt={item.label} width={11} height={11} />
-        ) : null}
-        <span className={`${item.color} text-[9px]`}>{item.price}</span>
-      </div>
-    </Tooltip>
-  );
-
-  const renderFeeItem = (item: typeof FEE_DATA[0]) => (
-    <Tooltip content={item.tooltip} key={item.label}>
-      <div className={cn("flex items-center gap-[3px] whitespace-nowrap", HOVER_CLASSES.common)}>
-        <item.icon className="w-[12px] h-[12px] text-[#6b6b7a]" />
-        <span className="text-[#6b6b7a] text-[9px]">{item.price}</span>
-      </div>
-    </Tooltip>
-  );
-
-  const renderIconButton = (item: { icon: any; tooltip: string }, key?: string) => (
-    <Tooltip content={item.tooltip} key={key}>
-      <button className={HOVER_CLASSES.endIcon}>
-        <item.icon className="w-3 h-3 text-[#fcfcfc]" />
-      </button>
-    </Tooltip>
-  );
-
   const renderScrollButton = (direction: 'left' | 'right', canScroll: boolean) => {
     const Icon = direction === 'left' ? RiArrowLeftSLine : RiArrowRightSLine;
     const position = direction === 'left' ? 'left-0 justify-start' : 'right-0 justify-end';
@@ -169,103 +140,127 @@ export function BottomStatusBar({ className, loading }: BottomStatusBarProps) {
         className="flex items-center justify-between w-full px-4 lg:px-7 overflow-x-auto overflow-y-visible scrollbar-hide"
         onScroll={updateScrollState}
       >
-        <div className="flex items-center gap-2 lg:gap-2 shrink-0">
-          <Tooltip content="1 - Trading Settings">
-            <button className="flex items-center gap-1 px-1 py-[2px] bg-[rgba(82,111,255,0.15)] border-none rounded-[4px] text-[#526fff] text-[9px] font-medium cursor-pointer whitespace-nowrap hover:bg-[#1a1a1f] hover:rounded-md transition-all">
+        <div className="flex items-center gap-2 lg:gap-3 shrink-0">
+          <Tooltip content="Active Preset">
+            <button
+              onClick={() => dispatch(setActivePreset('P1'))}
+              className="flex items-center gap-1 px-2 py-[3px] bg-[#526fff] border-none rounded-[4px] text-white text-[9px] font-bold cursor-pointer whitespace-nowrap hover:brightness-110 transition-all"
+            >
               <RiListSettingsLine className="w-[10px] h-[10px]" />
-              <span className="font-semibold uppercase">Preset 1</span>
+              <span className="uppercase">PRESET 1</span>
             </button>
           </Tooltip>
 
           <Tooltip content="Active wallets">
-            <div className="flex items-center -mr-2">
+            <div className="flex items-center">
               <WalletSolPill variant="statusBar" className="hover:bg-[#1a1a1f] hover:border-[#2a2a38] transition-all" walletCount={1} solBalance={0} />
             </div>
           </Tooltip>
 
-          <div className="w-[1px] h-3 bg-[#1a1a1f] shrink-0" />
-
-          <Tooltip content="Tracker settings">
-            <button className="bg-none border-none p-[2px] cursor-pointer text-[#6b6b7a] hover:text-[#fcfcfcfc] flex hover:bg-[#1a1a1f] rounded-md transition-all">
-              <RiSettings3Line className="w-[12px] h-[12px] -mr-2" />
+          <div className="flex items-center gap-2">
+            <button className="text-[#6b6b7a] hover:text-white transition-colors">
+              <RiSettings3Line className="w-3.5 h-3.5" />
             </button>
-          </Tooltip>
-
-          {NAV_SETTINGS.map(item => (
-            <Tooltip content={item.tooltip} key={item.label}>
-              <NavButton icon={<item.icon className="w-[11px] h-[11px]" />} label={item.label} withDot={item.withDot} className={settingsHoverClasses} />
-            </Tooltip>
-          ))}
-
-          <Tooltip content="Pulse Settings">
-            <button className="flex items-center gap-[3px] px-1 py-[2px] bg-[#1a1a1f] border-none rounded-[4px] text-[#6b6b7a] hover:text-[#fcfcfcfc] text-[9px] cursor-pointer hover:bg-[#25262e] transition-all">
-              <RiPulseLine className="w-[11px] h-[11px] text-[#6b6b7a]" />
-              <span className="text-[#fcfcfc]">Pulse</span>
+            <button className="text-[#6b6b7a] hover:text-white transition-colors">
+              <RiStarLine className="w-3.5 h-3.5" />
             </button>
-          </Tooltip>
-          <Tooltip content="PnL Settings">
-            <NavButton icon={<RiBarChartLine className="w-[11px] h-[11px]" />} label="PnL" className={cn(settingsHoverClasses, "text-[8px]")} />
-          </Tooltip>
+            <button className="text-[#6b6b7a] hover:text-white transition-colors">
+              <RiBarChartLine className="w-3.5 h-3.5" />
+            </button>
+          </div>
 
-          <div className="w-[1px] h-3 bg-[#1a1a1f] shrink-0 -mr-1" />
+          <div className="w-[1px] h-3 bg-white/10 shrink-0" />
 
-          <div className="flex items-center gap-1 xl:gap-2">
+          <div className="flex items-center gap-3">
+            {NAV_LINKS.map(link => (
+              <Tooltip content={link.tooltip} key={link.label}>
+                <button className="flex items-center gap-1 text-[#6b6b7a] hover:text-white transition-colors">
+                  <link.icon className="w-3.5 h-3.5" />
+                  <span className="text-[9px] font-medium">{link.label}</span>
+                </button>
+              </Tooltip>
+            ))}
+          </div>
+
+          <div className="w-[1px] h-3 bg-white/10 shrink-0" />
+
+          <div className="flex items-center gap-3">
             <MultiChainBadge />
-            <div className="w-[1px] h-3 bg-[#1a1a1f] shrink-0 -mr-2" />
 
-            {PRICE_DATA.map(renderPriceItem)}
+            {PRICE_DATA.map(item => (
+              <Tooltip content={item.tooltip} key={item.label}>
+                <div className="flex items-center gap-1 whitespace-nowrap">
+                  {item.icon ? (
+                    <item.icon className={cn("w-3 h-3", item.color)} />
+                  ) : item.imageSrc ? (
+                    <OptimizedImage src={item.imageSrc} alt={item.label} width={12} height={12} />
+                  ) : null}
+                  <span className={cn("text-[9px] font-bold", item.color)}>{item.price}</span>
+                </div>
+              </Tooltip>
+            ))}
 
             <Tooltip content={`Price of ${chainName} in USD`}>
-              <div className={cn("flex items-center gap-[3px] -mr-2 whitespace-nowrap", HOVER_CLASSES.common)}>
-                <ChainLogo width={11} height={11} />
-                <span className="text-[#14f195] text-[9px]">$181.6</span>
+              <div className="flex items-center gap-1 whitespace-nowrap">
+                <ChainLogo width={12} height={12} />
+                <span className="text-[#14f195] text-[9px] font-bold">$135.99</span>
               </div>
             </Tooltip>
           </div>
-
-          <div className="w-[1px] h-3 bg-[#1a1a1f] shrink-0" />
         </div>
 
-        <div className="flex items-center gap-1.5 lg:gap-2 shrink-0">
-          <PresetPill
-            activePreset={activePreset}
-            quickBuyAmount={quickBuyAmount}
-            onPresetChange={(p) => dispatch(setActivePreset(p))}
-          />
-
-          <div className="flex items-center gap-1">
-            {FEE_DATA.map(renderFeeItem)}
+        <div className="flex items-center gap-3 lg:gap-4 shrink-0">
+          <div className="flex items-center gap-3">
+            {FEE_DATA.map(item => (
+              <Tooltip content={item.tooltip} key={item.label}>
+                <div className="flex items-center gap-1 whitespace-nowrap">
+                  <item.icon className="w-3.5 h-3.5 text-[#6b6b7a]" />
+                  <span className="text-[#6b6b7a] text-[9px] font-medium">{item.price}</span>
+                </div>
+              </Tooltip>
+            ))}
           </div>
 
-          <div className="w-[1px] h-3 bg-[#1a1a1f] shrink-0" />
+          <div className="w-[1px] h-3 bg-white/10 shrink-0" />
 
-          <div className={`flex items-center justify-center w-[105px] gap-1 px-1.5 py-[2px] rounded-[4px] whitespace-nowrap shrink-0 ${loading ? 'bg-[rgba(248,113,113,0.15)]' : 'bg-[rgba(52,211,153,0.15)]'}`}>
-            <span className={`w-[5px] h-[5px] rounded-full shrink-0 ${loading ? 'bg-[#f87171]' : 'bg-[#34d399]'}`} />
-            <span className={`text-[9px] ${loading ? 'text-[#f87171]' : 'text-[#34d399]'}`}>
-              {loading ? 'Disconnected' : 'Connection is stable'}
-            </span>
+          <div className="flex items-center gap-1.5 px-2 py-[2px] bg-emerald-500/10 rounded-full whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <span className="text-emerald-500 text-[9px] font-medium">Connection is stable</span>
           </div>
 
-          <div className="flex items-center gap-[2px] text-white shrink-0">
-            <span className="font-medium text-[9px]">GLOBAL</span>
-            <RiArrowDownSLine className="w-3 h-3 shrink-0" />
+          <div className="flex items-center gap-1 text-white cursor-pointer hover:text-white/80 transition-colors">
+            <span className="font-bold text-[9px]">GLOBAL</span>
+            <RiArrowDownSLine className="w-3 h-3" />
           </div>
 
-          <div className="w-[1px] h-3 bg-[#1a1a1f] shrink-0" />
+          <div className="w-[1px] h-3 bg-white/10 shrink-0" />
 
-          <div className="flex items-center gap-3 shrink-0">
-            {END_ICONS.map((item, idx) => renderIconButton(item, `end-${idx}`))}
+          <div className="flex items-center gap-2.5">
+            {UTILITY_ICONS.map((item, idx) => (
+              <Tooltip content={item.tooltip} key={idx}>
+                <button className="text-[#6b6b7a] hover:text-white transition-colors">
+                  <item.icon className="w-3.5 h-3.5" />
+                </button>
+              </Tooltip>
+            ))}
           </div>
 
-          <div className="w-[1px] h-3 bg-[#1a1a1f] shrink-0" />
+          <div className="w-[1px] h-3 bg-white/10 shrink-0" />
 
-          <div className="flex items-center gap-1.5 shrink-0">
-            {SOCIAL_ICONS.map((item, idx) => renderIconButton(item, `social-${idx}`))}
-
-            <button className="flex items-center gap-[2px] bg-none border-none text-[#6b6b7a] hover:text-[#fcfcfcfc] cursor-pointer text-[9px] hover:bg-[#1a1a1f] px-1 py-[1.5px] rounded-md transition-all shrink-0">
-              <RiWindowLine className="w-[10px] h-[10px] ml-1" />
-              <span>Docs</span>
-            </button>
+          <div className="flex items-center gap-2.5">
+            {SOCIAL_ICONS.map((item, idx) => (
+              <Tooltip content={item.tooltip} key={idx}>
+                <button className="text-[#6b6b7a] hover:text-white transition-colors">
+                  <item.icon className="w-3.5 h-3.5" />
+                </button>
+              </Tooltip>
+            ))}
+            <Tooltip content="Documentation">
+              <button className="flex items-center gap-1 text-[#6b6b7a] hover:text-white transition-colors">
+                <RiBookOpenLine className="w-3.5 h-3.5" />
+                <span className="text-[9px] font-medium">Docs</span>
+              </button>
+            </Tooltip>
           </div>
         </div>
       </div>
