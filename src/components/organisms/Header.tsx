@@ -52,8 +52,7 @@ export function Header() {
   }, [updateScrollState]);
 
   return (
-    <header className="h-[35px] lg:h-[53px] bg-[#0c0c10] border-b border-[#1a1b23] select-none">
-      {}
+    <header className="fixed top-0 left-0 right-0 h-[53px] backdrop-blur-xl bg-black/80 border-b border-white/10 z-[100] select-none">
       <div className="hidden lg:flex items-center justify-between px-[24px] h-full">
         <div className="flex items-center">
           <Link href="/" className="flex items-center gap-[1px] no-underline mr-[24px]">
@@ -67,7 +66,6 @@ export function Header() {
             onMouseEnter={() => setIsNavHovered(true)}
             onMouseLeave={() => setIsNavHovered(false)}
           >
-
             <div
               ref={navContainerRef}
               className="flex items-center gap-[26px] overflow-x-auto overflow-y-visible scrollbar-hide max-w-[420px] py-3 -my-3"
@@ -88,7 +86,7 @@ export function Header() {
               className={`absolute left-0 top-0 bottom-0 w-[44px] flex items-center justify-start z-20 transition-opacity duration-200 ${canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 }`}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-[#0c0c10] via-[#0c0c10] to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent pointer-events-none" />
               <button
                 onClick={() => scrollNav('left')}
                 className={`relative z-10 flex items-center justify-center cursor-pointer transition-opacity duration-200 ${isNavHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
@@ -102,7 +100,7 @@ export function Header() {
               className={`absolute right-0 top-0 bottom-0 w-[44px] flex items-center justify-end z-20 transition-opacity duration-200 ${canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 }`}
             >
-              <div className="absolute inset-0 bg-gradient-to-l from-[#0c0c10] via-[#0c0c10] to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-l from-black via-black/50 to-transparent pointer-events-none" />
               <button
                 onClick={() => scrollNav('right')}
                 className={`relative z-10 flex items-center justify-center cursor-pointer transition-opacity duration-200 ${isNavHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
@@ -157,11 +155,11 @@ export function Header() {
               <div className="flex items-center gap-[4px]">
                 <RiWalletLine className="w-[16px] h-[16px] text-white" />
                 <ChainLogo width={14} height={14} />
-                <span className="text-white text-[12px] font-bold">O</span>
+                <span className="text-white text-[12px] font-bold">0</span>
               </div>
               <div className="flex items-center gap-[4px]">
                 <OptimizedImage src="https://axiom.trade/images/usdc-perps.svg" alt="USDC Perps" width={16} height={16} />
-                <span className="text-white text-[12px] font-bold">O</span>
+                <span className="text-white text-[12px] font-bold">0</span>
                 <RiArrowDownSLine className="w-[16px] h-[16px] text-white font-semibold" />
               </div>
             </div>
@@ -187,7 +185,6 @@ export function Header() {
         </div>
       </div>
 
-      {}
       <div className="flex lg:hidden items-center justify-between px-2 h-full overflow-hidden">
         <Link href="/" className="flex items-center no-underline shrink-0">
           <AxiomLogo className="w-[20px] h-[20px] text-white" />
